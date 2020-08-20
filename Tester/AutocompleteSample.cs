@@ -7,7 +7,7 @@ namespace Tester
 {
     public partial class AutocompleteSample : Form
     {
-        FastColoredTextBoxNS.AutocompleteMenu popupMenu;
+        private FastColoredTextBoxNS.AutocompleteMenu popupMenu;
 
         public AutocompleteSample()
         {
@@ -21,11 +21,19 @@ namespace Tester
             var randomWords = new List<string>();
             int codeA = Convert.ToInt32('a');
             for (int i = 0; i < 26; i++)
-            for (int j = 0; j < 26; j++)
-            for (int k = 0; k < 26; k++)
-            for (int l = 0; l < 26; l++)
-                randomWords.Add(
+            {
+                for (int j = 0; j < 26; j++)
+                {
+                    for (int k = 0; k < 26; k++)
+                    {
+                        for (int l = 0; l < 26; l++)
+                        {
+                            randomWords.Add(
                     new string(new char[]{Convert.ToChar(i + codeA), Convert.ToChar(j + codeA), Convert.ToChar(k + codeA), Convert.ToChar(l + codeA)}));
+                        }
+                    }
+                }
+            }
 
             //set words as autocomplete source
             popupMenu.Items.SetAutocompleteItems(randomWords);

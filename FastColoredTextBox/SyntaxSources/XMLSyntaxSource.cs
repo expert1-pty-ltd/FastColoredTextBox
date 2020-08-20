@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class XMLSyntaxSource : SyntaxHighlighter
+    internal class XMLSyntaxSource : SyntaxHighlighter
     {
-        Regex XMLFoldingRegex;
+        private Regex XMLFoldingRegex;
         public XMLSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         {
             Init();
@@ -49,8 +49,7 @@ namespace FastColoredTextBoxNS.SyntaxSources
             AddStyle("Entity",
                 PredefinedStyles.RedStyle,
                 new Regex(@"\&(amp|gt|lt|nbsp|quot|apos|copy|reg|#[0-9]{1,8}|#x[0-9a-f]{1,8});", RegexCompiledOption | RegexOptions.IgnoreCase));
-            
-            
+
             XMLFoldingRegex = new Regex(@"<(?<range>/?\w+)\s[^>]*?[^/]>|<(?<range>/?\w+)\s*>", RegexOptions.Singleline | RegexCompiledOption);
         }
         public override void AutoIndentNeeded(object sender, AutoIndentEventArgs args)
@@ -77,7 +76,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
                     stack.Push(tag);
                     // if this line has no markers - set marker
                     if (string.IsNullOrEmpty(fctb[iLine].FoldingStartMarker))
+                    {
                         fctb[iLine].FoldingStartMarker = tag.Marker;
+                    }
                 }
                 else
                 {
@@ -90,20 +91,24 @@ namespace FastColoredTextBoxNS.SyntaxSources
                         {
                             //remove marker, because same line can not be folding
                             if (fctb[iLine].FoldingStartMarker == tag.Marker) //was it our marker?
+                            {
                                 fctb[iLine].FoldingStartMarker = null;
+                            }
                         }
                         else
                         {
                             //set end folding marker
                             if (string.IsNullOrEmpty(fctb[iLine].FoldingEndMarker))
+                            {
                                 fctb[iLine].FoldingEndMarker = tag.Marker;
+                            }
                         }
                     }
                 }
             }
         }
 
-        class XmlFoldingTag
+        private class XmlFoldingTag
         {
             public string Name;
             public int id;

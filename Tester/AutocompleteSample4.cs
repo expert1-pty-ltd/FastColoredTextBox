@@ -11,9 +11,9 @@ namespace Tester
 {
     public partial class AutocompleteSample4 : Form
     {
-        AutocompleteMenu popupMenu;
+        private AutocompleteMenu popupMenu;
 
-        static readonly string[] sources = new string[]{
+        private static readonly string[] sources = new string[]{
             "com",
             "com.company",
             "com.company.Class1",
@@ -39,7 +39,9 @@ namespace Tester
             //
             var items = new List<AutocompleteItem>();
             foreach (var item in sources)
+            {
                 items.Add(new MethodAutocompleteItem2(item));
+            }
 
             popupMenu.Items.SetAutocompleteItems(items);
         }
@@ -50,15 +52,17 @@ namespace Tester
     /// </summary>
     public class MethodAutocompleteItem2 : MethodAutocompleteItem
     {
-        string firstPart;
-        string lastPart;
+        private string firstPart;
+        private string lastPart;
 
         public MethodAutocompleteItem2(string text)
             : base(text)
         {
             var i = text.LastIndexOf('.');
             if (i < 0)
+            {
                 firstPart = text;
+            }
             else
             {
                 firstPart = text.Substring(0, i);
@@ -73,25 +77,31 @@ namespace Tester
             if (i < 0)
             {
                 if (firstPart.StartsWith(fragmentText) && string.IsNullOrEmpty(lastPart))
+                {
                     return CompareResult.VisibleAndSelected;
+                }
                 //if (firstPart.ToLower().Contains(fragmentText.ToLower()))
-                  //  return CompareResult.Visible;
+                //  return CompareResult.Visible;
             }
             else
             {
                 var fragmentFirstPart = fragmentText.Substring(0, i);
                 var fragmentLastPart = fragmentText.Substring(i + 1);
 
-
                 if (firstPart != fragmentFirstPart)
+                {
                     return CompareResult.Hidden;
+                }
 
-                if (lastPart != null && lastPart.StartsWith(fragmentLastPart))
+                if (lastPart?.StartsWith(fragmentLastPart) == true)
+                {
                     return CompareResult.VisibleAndSelected;
+                }
 
-                if (lastPart != null && lastPart.ToLower().Contains(fragmentLastPart.ToLower()))
+                if (lastPart?.ToLower().Contains(fragmentLastPart.ToLower()) == true)
+                {
                     return CompareResult.Visible;
-
+                }
             }
 
             return CompareResult.Hidden;
@@ -100,7 +110,9 @@ namespace Tester
         public override string GetTextForReplace()
         {
             if (lastPart == null)
+            {
                 return firstPart;
+            }
 
             return firstPart + "." + lastPart;
         }
@@ -108,7 +120,9 @@ namespace Tester
         public override string ToString()
         {
             if (lastPart == null)
+            {
                 return firstPart;
+            }
 
             return lastPart;
         }

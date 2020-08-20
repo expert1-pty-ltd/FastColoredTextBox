@@ -16,17 +16,17 @@ namespace Tester
 {
     public partial class PowerfulSample : Form
     {
-        string lang = "CSharp (custom highlighter)";
+        private string lang = "CSharp (custom highlighter)";
 
         //styles
-        TextStyle BlueStyle = new TextStyle(Brushes.Blue, null, FontStyle.Regular);
-        TextStyle BoldStyle = new TextStyle(null, null, FontStyle.Bold | FontStyle.Underline);
-        TextStyle GrayStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
-        TextStyle MagentaStyle = new TextStyle(Brushes.Magenta, null, FontStyle.Regular);
-        TextStyle GreenStyle = new TextStyle(Brushes.Green, null, FontStyle.Italic);
-        TextStyle BrownStyle = new TextStyle(Brushes.Brown, null, FontStyle.Italic);
-        TextStyle MaroonStyle = new TextStyle(Brushes.Maroon, null, FontStyle.Regular);
-        MarkerStyle SameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(40, Color.Gray)));
+        private TextStyle BlueStyle = new TextStyle(Brushes.Blue, null, FontStyle.Regular);
+        private TextStyle BoldStyle = new TextStyle(null, null, FontStyle.Bold | FontStyle.Underline);
+        private TextStyle GrayStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
+        private TextStyle MagentaStyle = new TextStyle(Brushes.Magenta, null, FontStyle.Regular);
+        private TextStyle GreenStyle = new TextStyle(Brushes.Green, null, FontStyle.Italic);
+        private TextStyle BrownStyle = new TextStyle(Brushes.Brown, null, FontStyle.Italic);
+        private TextStyle MaroonStyle = new TextStyle(Brushes.Maroon, null, FontStyle.Regular);
+        private MarkerStyle SameWordsStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(40, Color.Gray)));
 
         public PowerfulSample()
         {
@@ -34,11 +34,11 @@ namespace Tester
         }
 
         private void InitStylesPriority()
-        {           
+        {
             //add this style explicitly for drawing under other styles
             fctb.AddStyle(SameWordsStyle);
         }
-        
+
         private void fctb_TextChanged(object sender, TextChangedEventArgs e)
         {
             switch (lang)
@@ -62,7 +62,7 @@ namespace Tester
 
                 fctb.OnSyntaxHighlight(new TextChangedEventArgs(fctb.Range));
             }
-        }   
+        }
 
         private void CSharpSyntaxHighlight(TextChangedEventArgs e)
         {
@@ -110,7 +110,9 @@ namespace Tester
         private void miLanguage_DropDownOpening(object sender, EventArgs e)
         {
             foreach (ToolStripMenuItem mi in miLanguage.DropDownItems)
+            {
                 mi.Checked = mi.Text == lang;
+            }
         }
 
         private void miCSharp_Click(object sender, EventArgs e)
@@ -154,22 +156,34 @@ namespace Tester
         private void collapseAllregionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //this example shows how to collapse all #region blocks (C#)
-            if (!lang.StartsWith("CSharp")) return;
+            if (!lang.StartsWith("CSharp"))
+            {
+                return;
+            }
+
             for (int iLine = 0; iLine < fctb.LinesCount; iLine++)
             {
                 if (fctb[iLine].FoldingStartMarker == @"#region\b")//marker @"#region\b" was used in SetFoldingMarkers()
+                {
                     fctb.CollapseFoldingBlock(iLine);
+                }
             }
         }
 
         private void exapndAllregionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //this example shows how to expand all #region blocks (C#)
-            if (!lang.StartsWith("CSharp")) return;
+            if (!lang.StartsWith("CSharp"))
+            {
+                return;
+            }
+
             for (int iLine = 0; iLine < fctb.LinesCount; iLine++)
             {
                 if (fctb[iLine].FoldingStartMarker == @"#region\b")//marker @"#region\b" was used in SetFoldingMarkers()
+                {
                     fctb.ExpandFoldedBlock(iLine);
+                }
             }
         }
 
@@ -197,7 +211,6 @@ namespace Tester
                 }
                 if (sfd.FilterIndex == 2)
                 {
-                    
                     ExportToHTML exporter = new ExportToHTML();
                     exporter.UseBr = true;
                     exporter.UseNbsp = false;
@@ -213,18 +226,26 @@ namespace Tester
         {
             fctb.VisibleRange.ClearStyle(SameWordsStyle);
             if (!fctb.Selection.IsEmpty)
+            {
                 return;//user selected diapason
+            }
 
             //get fragment around caret
             var fragment = fctb.Selection.GetFragment(@"\w");
             string text = fragment.Text;
             if (text.Length == 0)
+            {
                 return;
+            }
             //highlight same words
             var ranges = fctb.VisibleRange.GetRanges("\\b" + text + "\\b").ToArray();
             if(ranges.Length>1)
-            foreach(var r in ranges)
-                r.SetStyle(SameWordsStyle);
+            {
+                foreach (var r in ranges)
+                {
+                    r.SetStyle(SameWordsStyle);
+                }
+            }
         }
 
         private void goForwardCtrlShiftToolStripMenuItem_Click(object sender, EventArgs e)
@@ -242,17 +263,25 @@ namespace Tester
             fctb.DoAutoIndent();
         }
 
-        const int maxBracketSearchIterations = 2000;
+        private const int maxBracketSearchIterations = 2000;
 
-        void GoLeftBracket(FastColoredTextBox tb, char leftBracket, char rightBracket)
+        private void GoLeftBracket(FastColoredTextBox tb, char leftBracket, char rightBracket)
         {
             Range range = tb.Selection.Clone();//need to clone because we will move caret
             int counter = 0;
             int maxIterations = maxBracketSearchIterations;
             while (range.GoLeftThroughFolded())//move caret left
             {
-                if (range.CharAfterStart == leftBracket) counter++;
-                if (range.CharAfterStart == rightBracket) counter--;
+                if (range.CharAfterStart == leftBracket)
+                {
+                    counter++;
+                }
+
+                if (range.CharAfterStart == rightBracket)
+                {
+                    counter--;
+                }
+
                 if (counter == 1)
                 {
                     //found
@@ -262,20 +291,31 @@ namespace Tester
                 }
                 //
                 maxIterations--;
-                if (maxIterations <= 0) break;
+                if (maxIterations <= 0)
+                {
+                    break;
+                }
             }
             tb.Invalidate();
         }
 
-        void GoRightBracket(FastColoredTextBox tb, char leftBracket, char rightBracket)
+        private void GoRightBracket(FastColoredTextBox tb, char leftBracket, char rightBracket)
         {
             var range = tb.Selection.Clone();//need clone because we will move caret
             int counter = 0;
             int maxIterations = maxBracketSearchIterations;
             do
             {
-                if (range.CharAfterStart == leftBracket) counter++;
-                if (range.CharAfterStart == rightBracket) counter--;
+                if (range.CharAfterStart == leftBracket)
+                {
+                    counter++;
+                }
+
+                if (range.CharAfterStart == rightBracket)
+                {
+                    counter--;
+                }
+
                 if (counter == -1)
                 {
                     //found
@@ -286,7 +326,10 @@ namespace Tester
                 }
                 //
                 maxIterations--;
-                if (maxIterations <= 0) break;
+                if (maxIterations <= 0)
+                {
+                    break;
+                }
             } while (range.GoRightThroughFolded());//move caret right
 
             tb.Invalidate();
@@ -306,7 +349,9 @@ namespace Tester
         {
             //block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{.*\}[^""']*$"))
+            {
                 return;
+            }
             //start of block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{"))
             {
@@ -335,11 +380,13 @@ namespace Tester
             }
             //is unclosed operator in previous line ?
             if (Regex.IsMatch(args.PrevLineText, @"^\s*(if|for|foreach|while|[\}\s]*else)\b[^{]*$"))
+            {
                 if (!Regex.IsMatch(args.PrevLineText, @"(;\s*$)|(;\s*//)"))//operator is unclosed
                 {
                     args.Shift = args.TabLength;
                     return;
                 }
+            }
         }
 
         private void miPrint_Click(object sender, EventArgs e)
@@ -347,7 +394,7 @@ namespace Tester
             fctb.Print(new PrintDialogSettings() { ShowPrintPreviewDialog = true });
         }
 
-        Random rnd = new Random();
+        private Random rnd = new Random();
 
         private void miChangeColors_Click(object sender, EventArgs e)
         {
@@ -391,7 +438,9 @@ namespace Tester
         {
             var form = new HotkeysEditorForm(fctb.HotkeysMapping);
             if(form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
                 fctb.HotkeysMapping = form.GetHotkeys();
+            }
         }
 
         private void rTFToolStripMenuItem_Click(object sender, EventArgs e)
@@ -419,6 +468,5 @@ namespace Tester
         {
             fctb.RemoveLinePrefix(fctb.CommentPrefix);
         }
-
     }
 }

@@ -6,8 +6,8 @@ namespace FastColoredTextBoxNS
 {
     ///
     /// These classes are required for correct data binding to Text property of FastColoredTextbox
-    /// 
-    class FCTBDescriptionProvider : TypeDescriptionProvider
+    ///
+    internal class FCTBDescriptionProvider : TypeDescriptionProvider
     {
         public FCTBDescriptionProvider(Type type)
             : base(GetDefaultTypeProvider(type))
@@ -19,8 +19,6 @@ namespace FastColoredTextBoxNS
             return TypeDescriptor.GetProvider(type);
         }
 
-
-
         public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
         {
             ICustomTypeDescriptor defaultDescriptor = base.GetTypeDescriptor(objectType, instance);
@@ -28,10 +26,10 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    class FCTBTypeDescriptor : CustomTypeDescriptor
+    internal class FCTBTypeDescriptor : CustomTypeDescriptor
     {
-        ICustomTypeDescriptor parent;
-        object instance;
+        private ICustomTypeDescriptor parent;
+        private object instance;
 
         public FCTBTypeDescriptor(ICustomTypeDescriptor parent, object instance)
             : base(parent)
@@ -52,16 +50,22 @@ namespace FastColoredTextBoxNS
             var list = new EventDescriptor[coll.Count];
 
             for (int i = 0; i < coll.Count; i++)
+            {
                 if (coll[i].Name == "TextChanged")//instead of TextChanged slip BindingTextChanged for binding
+                {
                     list[i] = new FooTextChangedDescriptor(coll[i]);
+                }
                 else
+                {
                     list[i] = coll[i];
+                }
+            }
 
             return new EventDescriptorCollection(list);
         }
     }
 
-    class FooTextChangedDescriptor : EventDescriptor
+    internal class FooTextChangedDescriptor : EventDescriptor
     {
         public FooTextChangedDescriptor(MemberDescriptor desc)
             : base(desc)

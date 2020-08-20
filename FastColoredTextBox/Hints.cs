@@ -13,8 +13,8 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class Hints : ICollection<Hint>, IDisposable
     {
-        FastColoredTextBox tb;
-        List<Hint> items = new List<Hint>();
+        private FastColoredTextBox tb;
+        private List<Hint> items = new List<Hint>();
 
         public Hints(FastColoredTextBox tb)
         {
@@ -27,7 +27,9 @@ namespace FastColoredTextBoxNS
         protected virtual void OnTextBoxKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (e.KeyCode == System.Windows.Forms.Keys.Escape && e.Modifiers == System.Windows.Forms.Keys.None)
+            {
                 Clear();
+            }
         }
 
         protected virtual void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -42,10 +44,12 @@ namespace FastColoredTextBoxNS
             tb.VisibleRangeChanged -= OnTextBoxVisibleRangeChanged;
         }
 
-        void OnTextBoxVisibleRangeChanged(object sender, EventArgs e)
+        private void OnTextBoxVisibleRangeChanged(object sender, EventArgs e)
         {
             if (items.Count == 0)
+            {
                 return;
+            }
 
             tb.NeedRecalc(true);
             foreach (var item in items)
@@ -60,13 +64,21 @@ namespace FastColoredTextBoxNS
             if (hint.Inline)
             {
                 if (hint.Range.Start.iLine < tb.LineInfos.Count - 1)
+                {
                     hint.HostPanel.Top = tb.LineInfos[hint.Range.Start.iLine + 1].startY - hint.TopPadding - hint.HostPanel.Height - tb.VerticalScroll.Value;
+                }
                 else
+                {
                     hint.HostPanel.Top = tb.TextHeight + tb.Paddings.Top - hint.HostPanel.Height - tb.VerticalScroll.Value;
+                }
             }
             else
             {
-                if (hint.Range.Start.iLine > tb.LinesCount - 1) return;
+                if (hint.Range.Start.iLine > tb.LinesCount - 1)
+                {
+                    return;
+                }
+
                 if (hint.Range.Start.iLine == tb.LinesCount - 1)
                 {
                     var y = tb.LineInfos[hint.Range.Start.iLine].startY - tb.VerticalScroll.Value + tb.CharHeight;
@@ -76,14 +88,17 @@ namespace FastColoredTextBoxNS
                         hint.HostPanel.Top = Math.Max(0, tb.LineInfos[hint.Range.Start.iLine].startY - tb.VerticalScroll.Value - hint.HostPanel.Height);
                     }
                     else
+                    {
                         hint.HostPanel.Top = y;
-
+                    }
                 }
                 else
                 {
                     hint.HostPanel.Top = tb.LineInfos[hint.Range.Start.iLine + 1].startY - tb.VerticalScroll.Value;
                     if (hint.HostPanel.Bottom > tb.ClientRectangle.Bottom)
+                    {
                         hint.HostPanel.Top = tb.LineInfos[hint.Range.Start.iLine + 1].startY - tb.CharHeight - hint.TopPadding - hint.HostPanel.Height - tb.VerticalScroll.Value;
+                    }
                 }
             }
 
@@ -97,17 +112,21 @@ namespace FastColoredTextBoxNS
                 var p1 = tb.PlaceToPoint(hint.Range.Start);
                 var p2 = tb.PlaceToPoint(hint.Range.End);
                 var cx = (p1.X + p2.X) / 2;
-                var x = cx - hint.HostPanel.Width / 2;
+                var x = cx - (hint.HostPanel.Width / 2);
                 hint.HostPanel.Left = Math.Max( tb.LeftIndent, x);
                 if(hint.HostPanel.Right > tb.ClientSize.Width)
+                {
                     hint.HostPanel.Left = Math.Max(tb.LeftIndent, x - (hint.HostPanel.Right - tb.ClientSize.Width));
+                }
             }
         }
 
         public IEnumerator<Hint> GetEnumerator()
         {
             foreach (var item in items)
+            {
                 yield return item;
+            }
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -125,11 +144,17 @@ namespace FastColoredTextBoxNS
             {
                 var toDelete = new List<Control>();
                 foreach (Control item in tb.Controls)
+                {
                     if (item is UnfocusablePanel)
+                    {
                         toDelete.Add(item);
+                    }
+                }
 
                 foreach (var item in toDelete)
+                {
                     tb.Controls.Remove(item);
+                }
 
                 for (int i = 0; i < tb.LineInfos.Count; i++)
                 {
@@ -207,7 +232,7 @@ namespace FastColoredTextBoxNS
     /// <summary>
     /// Hint of FastColoredTextbox
     /// </summary>
-    public class Hint 
+    public class Hint
     {
         /// <summary>
         /// Text of simple hint
@@ -244,7 +269,7 @@ namespace FastColoredTextBoxNS
         /// <summary>
         /// Occurs when user click on simple hint
         /// </summary>
-        public event EventHandler Click 
+        public event EventHandler Click
         {
             add { HostPanel.Click += value; }
             remove { HostPanel.Click -= value; }
@@ -291,7 +316,7 @@ namespace FastColoredTextBoxNS
         {
             Range.tb.DoRangeVisible(Range, true);
             Range.tb.DoVisibleRectangle(HostPanel.Bounds);
-            
+
             Range.tb.Invalidate();
         }
 
@@ -314,7 +339,7 @@ namespace FastColoredTextBoxNS
         /// <param name="text">Text for simple hint</param>
         /// <param name="inline">Inlining. If True then hint will moves apart text</param>
         /// <param name="dock">Docking. If True then hint will fill whole line</param>
-        public Hint(Range range, string text, bool inline, bool dock) 
+        public Hint(Range range, string text, bool inline, bool dock)
             : this(range, null, text, inline, dock)
         {
         }

@@ -63,7 +63,6 @@ namespace FastColoredTextBoxNS
                     var p = (KeyValuePair<char, Keys>)item;
                     UnderlayingControl.ProcessKey(p.Key, p.Value);
                 }
-                
             }
             UnderlayingControl.EndAutoUndo();
             UnderlayingControl.Selection.EndUpdate();
@@ -94,17 +93,20 @@ namespace FastColoredTextBoxNS
             macro.Clear();
         }
 
-
         internal void ProcessKey(Keys keyData)
         {
             if (IsRecording)
+            {
                 AddKeyToMacros(keyData);
+            }
         }
 
         internal void ProcessKey(char c, Keys modifiers)
         {
             if (IsRecording)
+            {
                 AddCharToMacros(c, modifiers);
+            }
         }
 
         /// <summary>
@@ -144,13 +146,15 @@ namespace FastColoredTextBoxNS
                 return sb.ToString();
             }
 
-            set 
+            set
             {
                 isRecording = false;
                 ClearMacros();
 
                 if (string.IsNullOrEmpty(value))
+                {
                     return;
+                }
 
                 var doc = new XmlDocument();
                 doc.LoadXml(value);
@@ -161,19 +165,28 @@ namespace FastColoredTextBoxNS
                 var kc = new KeysConverter();
 
                 if(list != null)
-                foreach (XmlElement node in list)
+                {
+                    foreach (XmlElement node in list)
                 {
                     var ca = node.GetAttributeNode("char");
                     var ka = node.GetAttributeNode("key");
                     if (ca != null)
                     {
                         if(ka!=null)
-                            AddCharToMacros((char)int.Parse(ca.Value), (Keys)kc.ConvertFromString(ka.Value));
+                            {
+                                AddCharToMacros((char)int.Parse(ca.Value), (Keys)kc.ConvertFromString(ka.Value));
+                            }
+                            else
+                            {
+                                AddCharToMacros((char)int.Parse(ca.Value), Keys.None);
+                            }
+                        }
                         else
-                            AddCharToMacros((char)int.Parse(ca.Value), Keys.None);
-                    }else
                     if(ka!=null)
+                        {
                             AddKeyToMacros((Keys)kc.ConvertFromString(ka.Value));
+                        }
+                    }
                 }
 
                 Thread.CurrentThread.CurrentUICulture = cult;

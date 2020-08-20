@@ -15,8 +15,8 @@ namespace Tester
 {
     public partial class GifImageDrawingSample : Form
     {
-        GifImageStyle style;
-        static string RegexSpecSymbolsPattern = @"[\^\$\[\]\(\)\.\\\*\+\|\?\{\}]";
+        private GifImageStyle style;
+        private static string RegexSpecSymbolsPattern = @"[\^\$\[\]\(\)\.\\\*\+\|\?\{\}]";
 
         public GifImageDrawingSample()
         {
@@ -37,7 +37,11 @@ namespace Tester
 
         private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
         {
-            if (style == null) return;
+            if (style == null)
+            {
+                return;
+            }
+
             e.ChangedRange.ClearStyle(StyleIndex.All);
             foreach (var key in style.ImagesByText.Keys)
             {
@@ -50,11 +54,11 @@ namespace Tester
     /// <summary>
     /// This class is used as text renderer for smiles
     /// </summary>
-    class GifImageStyle : TextStyle
+    internal class GifImageStyle : TextStyle
     {
         public Dictionary<string, Image> ImagesByText { get; private set; }
-        FastColoredTextBox parent;
-        System.Windows.Forms.Timer timer;
+        private FastColoredTextBox parent;
+        private System.Windows.Forms.Timer timer;
 
         public GifImageStyle(FastColoredTextBox parent)
             : base(null, null, FontStyle.Regular)
@@ -76,11 +80,15 @@ namespace Tester
         public void StartAnimation()
         {
             foreach (var image in ImagesByText.Values)
+            {
                 if (ImageAnimator.CanAnimate(image))
+                {
                     ImageAnimator.Animate(image, new EventHandler(OnFrameChanged));
+                }
+            }
         }
 
-        void OnFrameChanged(object sender, EventArgs args)
+        private void OnFrameChanged(object sender, EventArgs args)
         {
         }
 
@@ -97,11 +105,13 @@ namespace Tester
                     if (text.StartsWith(pair.Key))
                     {
                         float k = (float)(pair.Key.Length * range.tb.CharWidth) / pair.Value.Width;
-                        if (k > 1) 
+                        if (k > 1)
+                        {
                             k = 1f;
+                        }
                         //
                         text = text.Substring(pair.Key.Length);
-                        RectangleF rect = new RectangleF(position.X + range.tb.CharWidth * pair.Key.Length / 2 - pair.Value.Width * k/2, position.Y, pair.Value.Width * k, pair.Value.Height * k);
+                        RectangleF rect = new RectangleF(position.X + (range.tb.CharWidth * pair.Key.Length / 2) - (pair.Value.Width * k/2), position.Y, pair.Value.Width * k, pair.Value.Height * k);
                         gr.DrawImage(pair.Value, rect);
                         position.Offset(range.tb.CharWidth * pair.Key.Length, 0);
                         replaced = true;

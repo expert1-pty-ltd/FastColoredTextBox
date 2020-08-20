@@ -11,9 +11,9 @@ namespace FastColoredTextBoxNS
     /// Thankfully the size of the char does not change for the same font
     /// However we would still need to indentify the font somehow
     /// </summary>
-    static class CharSizeCache
+    internal static class CharSizeCache
     {
-        static readonly Dictionary<string, SizeF> cache = new Dictionary<string, SizeF>();
+        private static readonly Dictionary<string, SizeF> cache = new Dictionary<string, SizeF>();
         internal static SizeF GetCharSize(Font font, char c)
         {
             var key = GetKey(font, c);

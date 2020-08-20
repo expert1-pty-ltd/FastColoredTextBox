@@ -7,8 +7,8 @@ namespace FastColoredTextBoxNS
     {
         public static int MaxHistoryLength = 200;
 
-        LimitedStack<UndoableCommand> history;
-        Stack<UndoableCommand> redoStack = new Stack<UndoableCommand>();
+        private LimitedStack<UndoableCommand> history;
+        private Stack<UndoableCommand> redoStack = new Stack<UndoableCommand>();
         public TextSource TextSource{ get; private set; }
         public bool UndoRedoStackIsEnabled { get; set; }
 
@@ -24,14 +24,19 @@ namespace FastColoredTextBoxNS
         public virtual void ExecuteCommand(Command cmd)
         {
             if (disabledCommands > 0)
+            {
                 return;
+            }
 
             //multirange ?
             if (cmd.ts.CurrentTB.Selection.ColumnSelectionMode)
-            if (cmd is UndoableCommand)
-                //make wrapper
-                cmd = new MultiRangeCommand((UndoableCommand)cmd);
-
+            {
+                if (cmd is UndoableCommand)
+                {
+                    //make wrapper
+                    cmd = new MultiRangeCommand((UndoableCommand)cmd);
+                }
+            }
 
             if (cmd is UndoableCommand)
             {
@@ -48,11 +53,15 @@ namespace FastColoredTextBoxNS
             {
                 //OnTextChanging cancels enter of the text
                 if (cmd is UndoableCommand)
+                {
                     history.Pop();
+                }
             }
             //
             if (!UndoRedoStackIsEnabled)
+            {
                 ClearHistory();
+            }
             //
             redoStack.Clear();
             //
@@ -82,7 +91,9 @@ namespace FastColoredTextBoxNS
             if (history.Count > 0)
             {
                 if (history.Peek().autoUndo)
+                {
                     Undo();
+                }
             }
 
             TextSource.CurrentTB.OnUndoRedoStateChanged();
@@ -100,14 +111,18 @@ namespace FastColoredTextBoxNS
             disabledCommands++;
         }
 
-        int autoUndoCommands = 0;
+        private int autoUndoCommands = 0;
 
         public void EndAutoUndoCommands()
         {
             autoUndoCommands--;
             if (autoUndoCommands == 0)
+            {
                 if (history.Count > 0)
+                {
                     history.Peek().autoUndo = false;
+                }
+            }
         }
 
         public void BeginAutoUndoCommands()
@@ -125,14 +140,20 @@ namespace FastColoredTextBoxNS
         internal void Redo()
         {
             if (redoStack.Count == 0)
+            {
                 return;
+            }
+
             UndoableCommand cmd;
             BeginDisableCommands();//prevent text changing into handlers
             try
             {
                 cmd = redoStack.Pop();
                 if (TextSource.CurrentTB.Selection.ColumnSelectionMode)
+                {
                     TextSource.CurrentTB.Selection.ColumnSelectionMode = false;
+                }
+
                 TextSource.CurrentTB.Selection.Start = cmd.sel.Start;
                 TextSource.CurrentTB.Selection.End = cmd.sel.End;
                 cmd.Execute();
@@ -148,13 +169,15 @@ namespace FastColoredTextBoxNS
 
             //redo command after autoUndoable command
             if (cmd.autoUndo)
+            {
                 Redo();
+            }
 
             TextSource.CurrentTB.OnUndoRedoStateChanged();
         }
 
-        public bool UndoEnabled 
-        { 
+        public bool UndoEnabled
+        {
             get
             {
                 return history.Count > 0;
@@ -191,8 +214,16 @@ namespace FastColoredTextBoxNS
         {
             get
             {
-                if (End.iLine < Start.iLine) return End.iChar;
-                if (End.iLine > Start.iLine) return Start.iChar;
+                if (End.iLine < Start.iLine)
+                {
+                    return End.iChar;
+                }
+
+                if (End.iLine > Start.iLine)
+                {
+                    return Start.iChar;
+                }
+
                 return Math.Min(End.iChar, Start.iChar);
             }
         }
@@ -227,16 +258,24 @@ namespace FastColoredTextBoxNS
             if (invert)
             {
                 if (b)
+                {
                     ts.OnTextChanged(sel.Start.iLine, sel.Start.iLine);
+                }
                 else
+                {
                     ts.OnTextChanged(sel.Start.iLine, lastSel.Start.iLine);
+                }
             }
             else
             {
                 if (b)
+                {
                     ts.OnTextChanged(sel.Start.iLine, lastSel.Start.iLine);
+                }
                 else
+                {
                     ts.OnTextChanged(lastSel.Start.iLine, lastSel.Start.iLine);
+                }
             }
         }
 

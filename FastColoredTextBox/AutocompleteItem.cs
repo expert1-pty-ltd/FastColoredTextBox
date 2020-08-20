@@ -12,11 +12,10 @@ namespace FastColoredTextBoxNS
         public string Text;
         public int ImageIndex = -1;
         public object Tag;
-        string toolTipTitle;
-        string toolTipText;
-        string menuText;
+        private string toolTipTitle;
+        private string toolTipText;
+        private string menuText;
         public AutocompleteMenu Parent { get; internal set; }
-        
 
         public AutocompleteItem()
         {
@@ -59,9 +58,11 @@ namespace FastColoredTextBoxNS
         /// </summary>
         public virtual CompareResult Compare(string fragmentText)
         {
-            if(string.IsNullOrEmpty(fragmentText) || Text.ToLowerInvariant().Contains(fragmentText.ToLowerInvariant()) &&
-                   Text != fragmentText)
+            if (string.IsNullOrEmpty(fragmentText) || (Text.IndexOf(fragmentText, StringComparison.InvariantCultureIgnoreCase) >= 0 &&
+                   Text != fragmentText))
+            {
                 return CompareResult.VisibleAndSelected;
+            }
 
             return CompareResult.Hidden;
         }
@@ -79,7 +80,6 @@ namespace FastColoredTextBoxNS
         /// </summary>
         public virtual void OnSelected(AutocompleteMenu popupMenu, SelectedEventArgs e)
         {
-            ;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace FastColoredTextBoxNS
         /// Tooltip text.
         /// </summary>
         /// <remarks>For display tooltip text, ToolTipTitle must be not null</remarks>
-        public virtual string ToolTipText 
+        public virtual string ToolTipText
         {
             get{ return toolTipText; }
             set { toolTipText = value; }
@@ -188,8 +188,12 @@ namespace FastColoredTextBoxNS
             e.Tb.Selection.Start = p1;
             //move caret position right and find char ^
             while (e.Tb.Selection.CharBeforeStart != '^')
+            {
                 if (!e.Tb.Selection.GoRightThroughFolded())
+                {
                     break;
+                }
+            }
             //remove char ^
             e.Tb.Selection.GoLeft(true);
             e.Tb.InsertText("");
@@ -205,7 +209,9 @@ namespace FastColoredTextBoxNS
         {
             if (Text.StartsWith(fragmentText, StringComparison.InvariantCultureIgnoreCase) &&
                    Text != fragmentText)
+            {
                 return CompareResult.Visible;
+            }
 
             return CompareResult.Hidden;
         }
@@ -216,8 +222,8 @@ namespace FastColoredTextBoxNS
     /// </summary>
     public class MethodAutocompleteItem : AutocompleteItem
     {
-        string firstPart;
-        string lowercaseText;
+        private string firstPart;
+        private string lowercaseText;
 
         public MethodAutocompleteItem(string text)
             : base(text)
@@ -229,15 +235,27 @@ namespace FastColoredTextBoxNS
         {
             int i = fragmentText.LastIndexOf('.');
             if (i < 0)
+            {
                 return CompareResult.Hidden;
+            }
+
             string lastPart = fragmentText.Substring(i + 1);
             firstPart = fragmentText.Substring(0, i);
 
-            if(lastPart=="") return CompareResult.Visible;
-            if(Text.StartsWith(lastPart, StringComparison.InvariantCultureIgnoreCase))
-                return CompareResult.VisibleAndSelected;
-            if(lowercaseText.Contains(lastPart.ToLower()))
+            if(lastPart?.Length == 0)
+            {
                 return CompareResult.Visible;
+            }
+
+            if (Text.StartsWith(lastPart, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return CompareResult.VisibleAndSelected;
+            }
+
+            if (lowercaseText.Contains(lastPart.ToLower()))
+            {
+                return CompareResult.Visible;
+            }
 
             return CompareResult.Hidden;
         }
@@ -255,7 +273,7 @@ namespace FastColoredTextBoxNS
     public class SuggestItem : AutocompleteItem
     {
         public SuggestItem(string text, int imageIndex):base(text, imageIndex)
-        {   
+        {
         }
 
         public override CompareResult Compare(string fragmentText)

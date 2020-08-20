@@ -38,7 +38,7 @@ namespace Tester
             base.OnClosing(e);
         }
 
-        void Stop()
+        private void Stop()
         {
             stop = true;
             consoleTextBox1.IsReadLineMode = false;
@@ -55,7 +55,7 @@ namespace Tester
         private Place StartReadPlace { get; set; }
 
         /// <summary>
-        /// Control is waiting for line entering. 
+        /// Control is waiting for line entering.
         /// </summary>
         public bool IsReadLineMode
         {
@@ -121,16 +121,20 @@ namespace Tester
             if (IsReadLineMode)
             {
                 if (Selection.Start < StartReadPlace || Selection.End < StartReadPlace)
+                {
                     GoEnd();//move caret to entering position
+                }
 
                 if (Selection.Start == StartReadPlace || Selection.End == StartReadPlace)
+                {
                     if (text == "\b") //backspace
                     {
                         text = ""; //cancel deleting of last char of readonly text
                         return;
                     }
+                }
 
-                if (text != null && text.Contains('\n'))
+                if (text?.Contains('\n') == true)
                 {
                     text = text.Substring(0, text.IndexOf('\n') + 1);
                     IsReadLineMode = false;

@@ -16,7 +16,7 @@ namespace FastColoredTextBoxNS
     {
         public EventHandler TargetChanged;
 
-        FastColoredTextBox target;
+        private FastColoredTextBox target;
         private float scale = 0.3f;
         private bool needRepaint = true;
         private Place startPlace = Place.Empty;
@@ -29,7 +29,9 @@ namespace FastColoredTextBoxNS
             set
             {
                 if (target != null)
+                {
                     UnSubscribe(target);
+                }
 
                 target = value;
                 if (value != null)
@@ -45,7 +47,7 @@ namespace FastColoredTextBoxNS
         /// </summary>
         [Description("Scale")]
         [DefaultValue(0.3f)]
-        public float Scale
+        public new float Scale
         {
             get { return scale; }
             set
@@ -77,32 +79,33 @@ namespace FastColoredTextBoxNS
             Application.Idle += Application_Idle;
         }
 
-        void Application_Idle(object sender, EventArgs e)
+        private void Application_Idle(object sender, EventArgs e)
         {
             if(needRepaint)
+            {
                 Invalidate();
+            }
         }
 
         protected virtual void OnTargetChanged()
         {
             NeedRepaint();
 
-            if (TargetChanged != null)
-                TargetChanged(this, EventArgs.Empty);
+            TargetChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void UnSubscribe(FastColoredTextBox target)
         {
-            target.Scroll -= new ScrollEventHandler(Target_Scroll);
-            target.SelectionChangedDelayed -= new EventHandler(Target_SelectionChanged);
-            target.VisibleRangeChanged -= new EventHandler(Target_VisibleRangeChanged);
+            target.Scroll -= Target_Scroll;
+            target.SelectionChangedDelayed -= Target_SelectionChanged;
+            target.VisibleRangeChanged -= Target_VisibleRangeChanged;
         }
 
         protected virtual void Subscribe(FastColoredTextBox target)
         {
-            target.Scroll += new ScrollEventHandler(Target_Scroll);
-            target.SelectionChangedDelayed += new EventHandler(Target_SelectionChanged);
-            target.VisibleRangeChanged += new EventHandler(Target_VisibleRangeChanged);
+            target.Scroll += Target_Scroll;
+            target.SelectionChangedDelayed += Target_SelectionChanged;
+            target.VisibleRangeChanged += Target_VisibleRangeChanged;
         }
 
         protected virtual void Target_VisibleRangeChanged(object sender, EventArgs e)
@@ -134,24 +137,32 @@ namespace FastColoredTextBoxNS
         protected override void OnPaint(PaintEventArgs e)
         {
             if (target == null)
+            {
                 return;
+            }
 
             var zoom = this.Scale * 100 / target.Zoom;
 
             if (zoom <= float.Epsilon)
+            {
                 return;
+            }
 
             //calc startPlace
             var r = target.VisibleRange;
             if (startPlace.iLine > r.Start.iLine)
+            {
                 startPlace.iLine = r.Start.iLine;
+            }
             else
             {
                 var endP = target.PlaceToPoint(r.End);
                 endP.Offset(0, -(int)(ClientSize.Height / zoom) + target.CharHeight);
                 var pp = target.PointToPlace(endP);
                 if (pp.iLine > startPlace.iLine)
+                {
                     startPlace.iLine = pp.iLine;
+                }
             }
             startPlace.iChar = 0;
             //calc scroll pos
@@ -202,26 +213,36 @@ namespace FastColoredTextBoxNS
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
                 Scroll(e.Location);
+            }
+
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
                 Scroll(e.Location);
+            }
+
             base.OnMouseMove(e);
         }
 
         private void Scroll(Point point)
         {
             if (target == null)
+            {
                 return;
+            }
 
             var zoom = this.Scale*100/target.Zoom;
 
             if (zoom <= float.Epsilon)
+            {
                 return;
+            }
 
             var p0 = target.PlaceToPoint(startPlace);
             p0 = new Point(0, p0.Y + (int) (point.Y/zoom));
@@ -242,7 +263,9 @@ namespace FastColoredTextBoxNS
             {
                 Application.Idle -= Application_Idle;
                 if (target != null)
+                {
                     UnSubscribe(target);
+                }
             }
             base.Dispose(disposing);
         }

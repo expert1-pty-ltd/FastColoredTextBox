@@ -48,25 +48,24 @@ namespace Tester
         }
     }
 
-
     /// <summary>
     /// Text source for displaying readonly text, given as string.
     /// </summary>
     public class StringTextSource : TextSource, IDisposable
     {
-        List<int> sourceStringLinePositions = new List<int>();
-        string sourceString;
-        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        private List<int> sourceStringLinePositions = new List<int>();
+        private string sourceString;
+        private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
 
         public StringTextSource(FastColoredTextBox tb)
             : base(tb)
         {
             timer.Interval = 10000;
-            timer.Tick += new EventHandler(timer_Tick);
+            timer.Tick += timer_Tick;
             timer.Enabled = true;
         }
 
-        void timer_Tick(object sender, EventArgs e)
+        private void timer_Tick(object sender, EventArgs e)
         {
             timer.Enabled = false;
             try
@@ -87,11 +86,13 @@ namespace Tester
 
             int count = 0;
             for (int i = 0; i < Count; i++)
-                if (base.lines[i] != null && !base.lines[i].IsChanged && Math.Abs(i - iFinishVisibleLine) > margin)
+            {
+                if (base.lines[i]?.IsChanged == false && Math.Abs(i - iFinishVisibleLine) > margin)
                 {
                     base.lines[i] = null;
                     count++;
                 }
+            }
 #if debug
             Console.WriteLine("UnloadUnusedLines: " + count);
 #endif
@@ -117,18 +118,26 @@ namespace Tester
             //load first lines for calc width of the text
             var linesCount = Math.Min(lines.Count, CurrentTB.Height / CurrentTB.CharHeight);
             for (int i = 0; i < linesCount; i++)
+            {
                 LoadLineFromSourceString(i);
+            }
 
             NeedRecalc(new TextChangedEventArgs(0, linesCount - 1));
             if (CurrentTB.WordWrap)
+            {
                 OnRecalcWordWrap(new TextChangedEventArgs(0, linesCount - 1));
+            }
         }
 
         public override void ClearIsChanged()
         {
             foreach (var line in lines)
+            {
                 if (line != null)
+                {
                     line.IsChanged = false;
+                }
+            }
         }
 
         public override Line this[int i]
@@ -136,9 +145,13 @@ namespace Tester
             get
             {
                 if (base.lines[i] != null)
+                {
                     return lines[i];
+                }
                 else
+                {
                     LoadLineFromSourceString(i);
+                }
 
                 return lines[i];
             }
@@ -154,17 +167,25 @@ namespace Tester
 
             string s;
             if(i == Count - 1)
+            {
                 s = sourceString.Substring(sourceStringLinePositions[i]);
+            }
             else
+            {
                 s = sourceString.Substring(sourceStringLinePositions[i], sourceStringLinePositions[i + 1] - sourceStringLinePositions[i] - 1);
+            }
 
             foreach (var c in s)
+            {
                 line.Add(new FastColoredTextBoxNS.Char(c));
+            }
 
             base.lines[i] = line;
 
             if (CurrentTB.WordWrap)
+            {
                 OnRecalcWordWrap(new TextChangedEventArgs(i, i));
+            }
         }
 
         public override void InsertLine(int index, Line line)
@@ -174,32 +195,48 @@ namespace Tester
 
         public override void RemoveLine(int index, int count)
         {
-            if (count == 0) return;
+            if (count == 0)
+            {
+                return;
+            }
+
             throw new NotImplementedException();
         }
 
         public override int GetLineLength(int i)
         {
             if (base.lines[i] == null)
+            {
                 return 0;
+            }
             else
+            {
                 return base.lines[i].Count;
+            }
         }
 
         public override bool LineHasFoldingStartMarker(int iLine)
         {
             if (lines[iLine] == null)
+            {
                 return false;
+            }
             else
+            {
                 return !string.IsNullOrEmpty(lines[iLine].FoldingStartMarker);
+            }
         }
 
         public override bool LineHasFoldingEndMarker(int iLine)
         {
             if (lines[iLine] == null)
+            {
                 return false;
+            }
             else
+            {
                 return !string.IsNullOrEmpty(lines[iLine].FoldingEndMarker);
+            }
         }
 
         public override void Dispose()
@@ -209,8 +246,10 @@ namespace Tester
 
         internal void UnloadLine(int iLine)
         {
-            if (lines[iLine] != null && !lines[iLine].IsChanged)
+            if (lines[iLine]?.IsChanged == false)
+            {
                 lines[iLine] = null;
+            }
         }
     }
 }

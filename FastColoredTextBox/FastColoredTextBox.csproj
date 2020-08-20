@@ -1,65 +1,79 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net35</TargetFrameworks>
-	<UseWindowsForms>true</UseWindowsForms>
-    <OutputType>Library</OutputType>
-    <RootNamespace>FastColoredTextBoxNS</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
-    <Reference Include="System.Design" />
-  </ItemGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\FastColoredTextBox.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>FCTB_key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Update="AutocompleteMenu.cs" />
-    <Compile Update="DocumentMap.cs" />
-    <Compile Update="GoToForm.cs" />
-    <Compile Update="GoToForm.Designer.cs">
-      <DependentUpon>GoToForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="HotkeysEditorForm.cs" />
-    <Compile Update="HotkeysEditorForm.Designer.cs">
-      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Ruler.cs" />
-    <Compile Update="Ruler.Designer.cs">
-      <DependentUpon>Ruler.cs</DependentUpon>
-    </Compile>
-    <Compile Update="ReplaceForm.cs" />
-    <Compile Update="ReplaceForm.Designer.cs">
-      <DependentUpon>ReplaceForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="FastColoredTextBox.cs" />
-    <Compile Update="FindForm.cs" />
-    <Compile Update="FindForm.Designer.cs">
-      <DependentUpon>FindForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="UnfocusablePanel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="FastColoredTextBox.resx">
-      <DependentUpon>FastColoredTextBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="FindForm.resx">
-      <DependentUpon>FindForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="GoToForm.resx">
-      <DependentUpon>GoToForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="HotkeysEditorForm.resx">
-      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ReplaceForm.resx">
-      <DependentUpon>ReplaceForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<OutputType>Library</OutputType>
+		<RootNamespace>FastColoredTextBoxNS</RootNamespace>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>2.16.26.0</Version>
+		<Copyright>© Pavel Torgashov, 2011-2016, pavel_torgashov@ukr.net.</Copyright>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+	</PropertyGroup>
+	<!--
+	<ItemGroup>
+		<Reference Include="System.Design" />
+	</ItemGroup>
+	-->
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DocumentationFile>bin\Debug\FastColoredTextBox.XML</DocumentationFile>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Update="AutocompleteMenu.cs" />
+		<Compile Update="DocumentMap.cs" />
+		<Compile Update="GoToForm.cs" />
+		<Compile Update="GoToForm.Designer.cs">
+			<DependentUpon>GoToForm.cs</DependentUpon>
+		</Compile>
+		<Compile Update="HotkeysEditorForm.cs" />
+		<Compile Update="HotkeysEditorForm.Designer.cs">
+			<DependentUpon>HotkeysEditorForm.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Ruler.cs" />
+		<Compile Update="Ruler.Designer.cs">
+			<DependentUpon>Ruler.cs</DependentUpon>
+		</Compile>
+		<Compile Update="ReplaceForm.cs" />
+		<Compile Update="ReplaceForm.Designer.cs">
+			<DependentUpon>ReplaceForm.cs</DependentUpon>
+		</Compile>
+		<Compile Update="FastColoredTextBox.cs" />
+		<Compile Update="FindForm.cs" />
+		<Compile Update="FindForm.Designer.cs">
+			<DependentUpon>FindForm.cs</DependentUpon>
+		</Compile>
+		<Compile Update="UnfocusablePanel.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="FastColoredTextBox.resx">
+			<DependentUpon>FastColoredTextBox.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="FindForm.resx">
+			<DependentUpon>FindForm.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="GoToForm.resx">
+			<DependentUpon>GoToForm.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="HotkeysEditorForm.resx">
+			<DependentUpon>HotkeysEditorForm.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="ReplaceForm.resx">
+			<DependentUpon>ReplaceForm.cs</DependentUpon>
+			<SubType>Designer</SubType>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\license.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="System.Design" />
+	</ItemGroup>
+
+	<!-- Workaround for https://github.com/dotnet/roslyn-project-system/issues/1739 -->
+	<PropertyGroup>
+		<AssemblySearchPaths>$(AssemblySearchPaths);{GAC}</AssemblySearchPaths>
+	</PropertyGroup>
 </Project>

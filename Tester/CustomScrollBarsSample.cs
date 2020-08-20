@@ -66,7 +66,10 @@ namespace Tester
             get { return value; }
             set {
                 if (this.value == value)
+                {
                     return;
+                }
+
                 this.value = value;
                 Invalidate();
                 OnScroll();
@@ -118,14 +121,20 @@ namespace Tester
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
+            {
                 MouseScroll(e);
+            }
+
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
+            {
                 MouseScroll(e);
+            }
+
             base.OnMouseMove(e);
         }
 
@@ -142,22 +151,23 @@ namespace Tester
             int v = 0;
             switch(Orientation)
             {
-                case ScrollOrientation.VerticalScroll: v = Maximum * (e.Y - thumbSize / 2) / (Height - thumbSize); break;
-                case ScrollOrientation.HorizontalScroll: v = Maximum * (e.X - thumbSize / 2) / (Width - thumbSize); break;
+                case ScrollOrientation.VerticalScroll: v = Maximum * (e.Y - (thumbSize / 2)) / (Height - thumbSize); break;
+                case ScrollOrientation.HorizontalScroll: v = Maximum * (e.X - (thumbSize / 2)) / (Width - thumbSize); break;
             }
             Value = Math.Max(0, Math.Min(Maximum, v));
         }
 
         public virtual void OnScroll(ScrollEventType type = ScrollEventType.ThumbPosition)
         {
-            if (Scroll != null)
-                Scroll(this, new ScrollEventArgs(type, Value, Orientation));
+            Scroll?.Invoke(this, new ScrollEventArgs(type, Value, Orientation));
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             if (Maximum <= 0)
+            {
                 return;
+            }
 
             Rectangle thumbRect = Rectangle.Empty;
             switch(Orientation)
@@ -171,10 +181,14 @@ namespace Tester
             }
 
             using(var brush = new SolidBrush(thumbColor))
+            {
                 e.Graphics.FillRectangle(brush, thumbRect);
+            }
 
             using (var pen = new Pen(borderColor))
+            {
                 e.Graphics.DrawRectangle(pen, new Rectangle(0, 0, Width - 1, Height - 1));
+            }
         }
     }
 

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class LuaSyntaxSources : SyntaxHighlighter
+    internal class LuaSyntaxSources : SyntaxHighlighter
     {
         public LuaSyntaxSources(FastColoredTextBox textbox) : base(textbox)
         {
@@ -61,7 +61,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
             }
             // then ...
             if (Regex.IsMatch(args.LineText, @"\b(then)\s*\S+"))
+            {
                 return;
+            }
             //start of operator block
             if (Regex.IsMatch(args.LineText, @"^\s*(function|do|for|while|repeat|if)\b"))
             {

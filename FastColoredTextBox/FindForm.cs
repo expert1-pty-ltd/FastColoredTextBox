@@ -7,9 +7,9 @@ namespace FastColoredTextBoxNS
 {
     public partial class FindForm : Form
     {
-        bool firstSearch = true;
-        Place startPlace;
-        FastColoredTextBox tb;
+        private bool firstSearch = true;
+        private Place startPlace;
+        private FastColoredTextBox tb;
 
         public FindForm(FastColoredTextBox tb)
         {
@@ -33,9 +33,14 @@ namespace FastColoredTextBoxNS
             {
                 RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
                 if (!cbRegex.Checked)
+                {
                     pattern = Regex.Escape(pattern);
+                }
+
                 if (cbWholeWord.Checked)
+                {
                     pattern = "\\b" + pattern + "\\b";
+                }
                 //
                 Range range = tb.Selection.Clone();
                 range.Normalize();
@@ -48,9 +53,13 @@ namespace FastColoredTextBoxNS
                 //
                 range.Start = range.End;
                 if (range.Start >= startPlace)
+                {
                     range.End = new Place(tb.GetLineLength(tb.LinesCount - 1), tb.LinesCount - 1);
+                }
                 else
+                {
                     range.End = startPlace;
+                }
                 //
                 foreach (var r in range.GetRangesByLines(pattern, opt))
                 {
@@ -116,7 +125,7 @@ namespace FastColoredTextBoxNS
             ResetSerach();
         }
 
-        void ResetSerach()
+        private void ResetSerach()
         {
             firstSearch = true;
         }

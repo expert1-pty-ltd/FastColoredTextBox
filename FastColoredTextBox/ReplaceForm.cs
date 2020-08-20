@@ -7,9 +7,9 @@ namespace FastColoredTextBoxNS
 {
     public partial class ReplaceForm : Form
     {
-        FastColoredTextBox tb;
-        bool firstSearch = true;
-        Place startPlace;
+        private FastColoredTextBox tb;
+        private bool firstSearch = true;
+        private Place startPlace;
 
         public ReplaceForm(FastColoredTextBox tb)
         {
@@ -27,7 +27,9 @@ namespace FastColoredTextBoxNS
             try
             {
                 if (!Find(tbFind.Text))
+                {
                     MessageBox.Show("Not found");
+                }
             }
             catch (Exception ex)
             {
@@ -39,15 +41,22 @@ namespace FastColoredTextBoxNS
         {
             var opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
             if (!cbRegex.Checked)
+            {
                 pattern = Regex.Escape(pattern);
+            }
+
             if (cbWholeWord.Checked)
+            {
                 pattern = "\\b" + pattern + "\\b";
+            }
             //
             var range = tb.Selection.IsEmpty? tb.Range.Clone() : tb.Selection.Clone();
             //
             var list = new List<Range>();
             foreach (var r in range.GetRangesByLines(pattern, opt))
+            {
                 list.Add(r);
+            }
 
             return list;
         }
@@ -56,9 +65,14 @@ namespace FastColoredTextBoxNS
         {
             RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
             if (!cbRegex.Checked)
+            {
                 pattern = Regex.Escape(pattern);
+            }
+
             if (cbWholeWord.Checked)
+            {
                 pattern = "\\b" + pattern + "\\b";
+            }
             //
             Range range = tb.Selection.Clone();
             range.Normalize();
@@ -71,9 +85,13 @@ namespace FastColoredTextBoxNS
             //
             range.Start = range.End;
             if (range.Start >= startPlace)
+            {
                 range.End = new Place(tb.GetLineLength(tb.LinesCount - 1), tb.LinesCount - 1);
+            }
             else
+            {
                 range.End = startPlace;
+            }
             //
             foreach (var r in range.GetRangesByLines(pattern, opt))
             {
@@ -94,9 +112,14 @@ namespace FastColoredTextBoxNS
         private void tbFind_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r')
+            {
                 btFindNext_Click(sender, null);
+            }
+
             if (e.KeyChar == '\x1b')
+            {
                 Hide();
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // David
@@ -124,8 +147,13 @@ namespace FastColoredTextBoxNS
             try
             {
                 if (tb.SelectionLength != 0)
-                if (!tb.Selection.ReadOnly)
-                    tb.InsertText(tbReplace.Text);
+                {
+                    if (!tb.Selection.ReadOnly)
+                    {
+                        tb.InsertText(tbReplace.Text);
+                    }
+                }
+
                 btFindNext_Click(sender, null);
             }
             catch (Exception ex)
@@ -145,17 +173,21 @@ namespace FastColoredTextBoxNS
                 //check readonly
                 var ro = false;
                 foreach (var r in ranges)
+                {
                     if (r.ReadOnly)
                     {
                         ro = true;
                         break;
                     }
+                }
                 //replace
                 if (!ro)
-                if (ranges.Count > 0)
+                {
+                    if (ranges.Count > 0)
                 {
                     tb.TextSource.Manager.ExecuteCommand(new ReplaceTextCommand(tb.TextSource, ranges, tbReplace.Text));
                     tb.Selection.Start = new Place(0, 0);
+                }
                 }
                 //
                 tb.Invalidate();
@@ -174,7 +206,7 @@ namespace FastColoredTextBoxNS
             ResetSerach();
         }
 
-        void ResetSerach()
+        private void ResetSerach()
         {
             firstSearch = true;
         }

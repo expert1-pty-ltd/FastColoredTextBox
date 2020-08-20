@@ -30,7 +30,7 @@ namespace Tester
         }
     }
 
-    class ColorStyle : TextStyle
+    internal class ColorStyle : TextStyle
     {
         public ColorStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle) : base(foreBrush, backgroundBrush, fontStyle)
         {
@@ -47,7 +47,7 @@ namespace Tester
         }
     }
 
-    class MyFCTB : FastColoredTextBox
+    internal class MyFCTB : FastColoredTextBox
     {
         protected override void OnMouseMove(MouseEventArgs e)
         {

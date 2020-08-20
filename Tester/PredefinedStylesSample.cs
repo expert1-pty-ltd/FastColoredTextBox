@@ -41,14 +41,14 @@ namespace Tester
 
     internal class ReadOnlyFCTB : FastColoredTextBox
     {
-        TextStyle linkStyle = new TextStyle(Brushes.Blue, null, FontStyle.Underline);
-        TextStyle visitedLinkStyle = new TextStyle(Brushes.Brown, null, FontStyle.Underline);
-        TextStyle boldStyle = new TextStyle(Brushes.Navy, null, FontStyle.Bold);
-        List<BlockDesc> blockDescs = new List<BlockDesc>();
+        private TextStyle linkStyle = new TextStyle(Brushes.Blue, null, FontStyle.Underline);
+        private TextStyle visitedLinkStyle = new TextStyle(Brushes.Brown, null, FontStyle.Underline);
+        private TextStyle boldStyle = new TextStyle(Brushes.Navy, null, FontStyle.Bold);
+        private List<BlockDesc> blockDescs = new List<BlockDesc>();
 
-        Point lastMouseCoord;
-        Place lastPlace;
-        readonly Place emptyPlace = new Place(-1, -1);
+        private Point lastMouseCoord;
+        private Place lastPlace;
+        private readonly Place emptyPlace = new Place(-1, -1);
 
         public ReadOnlyFCTB()
         {
@@ -65,12 +65,18 @@ namespace Tester
             var oldPlace = new Place(GetLineLength(LinesCount - 1), LinesCount - 1);
 
             if (desc.IsBold)
+            {
                 AppendText(text, boldStyle);
+            }
             else
                 if (!string.IsNullOrEmpty(desc.URL))
-                    AppendText(text, linkStyle);
-                else
-                    AppendText(text);
+            {
+                AppendText(text, linkStyle);
+            }
+            else
+            {
+                AppendText(text);
+            }
 
             //if descriptor contains some additional data ...
             if (!string.IsNullOrEmpty(desc.URL) || !string.IsNullOrEmpty(desc.ToolTip))
@@ -82,11 +88,13 @@ namespace Tester
             }
         }
 
-        BlockDesc GetDesc(Place place)
+        private BlockDesc GetDesc(Place place)
         {
             var index = blockDescs.BinarySearch(new BlockDesc() { Start = place, End = place });
             if (index >= 0)
+            {
                 return blockDescs[index];
+            }
 
             return null;
         }
@@ -102,14 +110,18 @@ namespace Tester
             //check distance
             var p = PlaceToPoint(lastPlace);
             if (Math.Abs(p.X - lastMouseCoord.X) > CharWidth * 2 || Math.Abs(p.Y - lastMouseCoord.Y) > CharHeight * 2)
+            {
                 lastPlace = emptyPlace;
+            }
 
             //check link style
             if (lastPlace != emptyPlace)
             {
                 var styles = GetStylesOfChar(lastPlace);
                 if (styles.Contains(linkStyle) || styles.Contains(visitedLinkStyle))
+                {
                     Cursor = Cursors.Hand;
+                }
             }
 
             base.OnMouseMove(e);
@@ -132,7 +144,9 @@ namespace Tester
         protected override void OnToolTip()
         {
             if (ToolTip == null)
+            {
                 return;
+            }
 
             //get descriptor for place
             var desc = GetDesc(lastPlace);
@@ -158,8 +172,16 @@ namespace Tester
 
         public int CompareTo(BlockDesc other)
         {
-            if (Start <= other.Start && End > other.End) return 0;
-            if (Start <= other.Start) return -1;
+            if (Start <= other.Start && End > other.End)
+            {
+                return 0;
+            }
+
+            if (Start <= other.Start)
+            {
+                return -1;
+            }
+
             return 1;
         }
     }

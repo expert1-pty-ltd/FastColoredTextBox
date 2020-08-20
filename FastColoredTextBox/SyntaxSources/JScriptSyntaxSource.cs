@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class JScriptSyntaxSource : SyntaxHighlighter
+    internal class JScriptSyntaxSource : SyntaxHighlighter
     {
         public JScriptSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         {
@@ -54,7 +54,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
         {
             //block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{.*\}[^""']*$"))
+            {
                 return;
+            }
             //start of block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{"))
             {
@@ -83,11 +85,13 @@ namespace FastColoredTextBoxNS.SyntaxSources
             }
             //is unclosed operator in previous line ?
             if (Regex.IsMatch(args.PrevLineText, @"^\s*(if|for|foreach|while|[\}\s]*else)\b[^{]*$"))
+            {
                 if (!Regex.IsMatch(args.PrevLineText, @"(;\s*$)|(;\s*//)")) //operator is unclosed
                 {
                     args.Shift = args.TabLength;
                     return;
                 }
+            }
         }
     }
 }

@@ -46,7 +46,6 @@ namespace FastColoredTextBoxNS
             chars = new List<Char>();
         }
 
-
         /// <summary>
         /// Clears style of chars, delete folding markers
         /// </summary>
@@ -70,7 +69,10 @@ namespace FastColoredTextBoxNS
             get{
                 StringBuilder sb = new StringBuilder(Count);
                 foreach(Char c in this)
+                {
                     sb.Append(c.c);
+                }
+
                 return sb.ToString();
             }
         }
@@ -93,10 +95,17 @@ namespace FastColoredTextBoxNS
             {
                 int spacesCount = 0;
                 for (int i = 0; i < Count; i++)
+                {
                     if (this[i].c == ' ')
+                    {
                         spacesCount++;
+                    }
                     else
+                    {
                         break;
+                    }
+                }
+
                 return spacesCount;
             }
         }
@@ -179,7 +188,10 @@ namespace FastColoredTextBoxNS
         public virtual void RemoveRange(int index, int count)
         {
             if (index >= Count)
+            {
                 return;
+            }
+
             chars.RemoveRange(index, Math.Min(Count - index, count));
         }
 
@@ -196,7 +208,7 @@ namespace FastColoredTextBoxNS
 
     public struct LineInfo
     {
-        List<int> cutOffPositions;
+        private List<int> cutOffPositions;
         //Y coordinate of line on screen
         internal int startY;
         internal int bottomPadding;
@@ -223,7 +235,10 @@ namespace FastColoredTextBoxNS
             get
             {
                 if (cutOffPositions == null)
+                {
                     cutOffPositions = new List<int>();
+                }
+
                 return cutOffPositions;
             }
         }
@@ -239,9 +254,14 @@ namespace FastColoredTextBoxNS
                 {
                     case VisibleState.Visible:
                          if (cutOffPositions == null)
+                        {
                             return 1;
-                         else
+                        }
+                        else
+                        {
                             return cutOffPositions.Count + 1;
+                        }
+
                     case VisibleState.Hidden: return 0;
                     case VisibleState.StartOfHiddenBlock: return 1;
                 }
@@ -258,7 +278,10 @@ namespace FastColoredTextBoxNS
         internal int GetWordWrapStringFinishPosition(int iWordWrapLine, Line line)
         {
             if (WordWrapStringsCount <= 0)
+            {
                 return 0;
+            }
+
             return iWordWrapLine == WordWrapStringsCount - 1 ? line.Count - 1 : CutOffPositions[iWordWrapLine] - 1;
         }
 
@@ -267,10 +290,19 @@ namespace FastColoredTextBoxNS
         /// </summary>
         public int GetWordWrapStringIndex(int iChar)
         {
-            if (cutOffPositions == null || cutOffPositions.Count == 0) return 0;
+            if (cutOffPositions == null || cutOffPositions.Count == 0)
+            {
+                return 0;
+            }
+
             for (int i = 0; i < cutOffPositions.Count; i++)
+            {
                 if (cutOffPositions[i] >/*>=*/ iChar)
+                {
                     return i;
+                }
+            }
+
             return cutOffPositions.Count;
         }
     }

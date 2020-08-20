@@ -22,7 +22,7 @@ namespace FastColoredTextBoxNS
         [DefaultValue(typeof(Color), "Black")]
         public Color CaretTickColor { get; set; }
 
-        FastColoredTextBox target;
+        private FastColoredTextBox target;
 
         [Description("Target FastColoredTextBox")]
         public FastColoredTextBox Target
@@ -31,7 +31,10 @@ namespace FastColoredTextBoxNS
             set
             {
                 if (target != null)
+                {
                     UnSubscribe(target);
+                }
+
                 target = value;
                 Subscribe(target);
                 OnTargetChanged();
@@ -51,34 +54,31 @@ namespace FastColoredTextBoxNS
             CaretTickColor = Color.Black;
         }
 
-
-
         protected virtual void OnTargetChanged()
         {
-            if (TargetChanged != null)
-                TargetChanged(this, EventArgs.Empty);
+            TargetChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void UnSubscribe(FastColoredTextBox target)
         {
-            target.Scroll -= new ScrollEventHandler(target_Scroll);
-            target.SelectionChanged -= new EventHandler(target_SelectionChanged);
-            target.VisibleRangeChanged -= new EventHandler(target_VisibleRangeChanged);
+            target.Scroll -= target_Scroll;
+            target.SelectionChanged -= target_SelectionChanged;
+            target.VisibleRangeChanged -= target_VisibleRangeChanged;
         }
 
         protected virtual void Subscribe(FastColoredTextBox target)
         {
-            target.Scroll += new ScrollEventHandler(target_Scroll);
-            target.SelectionChanged += new EventHandler(target_SelectionChanged);
-            target.VisibleRangeChanged += new EventHandler(target_VisibleRangeChanged);
+            target.Scroll += target_Scroll;
+            target.SelectionChanged += target_SelectionChanged;
+            target.VisibleRangeChanged += target_VisibleRangeChanged;
         }
 
-        void target_VisibleRangeChanged(object sender, EventArgs e)
+        private void target_VisibleRangeChanged(object sender, EventArgs e)
         {
             Invalidate();
         }
 
-        void target_SelectionChanged(object sender, EventArgs e)
+        private void target_SelectionChanged(object sender, EventArgs e)
         {
             Invalidate();
         }
@@ -97,7 +97,9 @@ namespace FastColoredTextBoxNS
         protected override void OnPaint(PaintEventArgs e)
         {
             if (target == null)
+            {
                 return;
+            }
 
             Point car = PointToClient(target.PointToScreen(target.PlaceToPoint(target.Selection.Start)));
 
@@ -116,16 +118,22 @@ namespace FastColoredTextBoxNS
 
             using (var pen = new Pen(TickColor))
             using (var textBrush = new SolidBrush(ForeColor))
-            for (float x = zeroPoint.X; x < Right; x += columnWidth, ++column)
+            {
+                for (float x = zeroPoint.X; x < Right; x += columnWidth, ++column)
             {
                 if (column % 10 == 0)
-                    e.Graphics.DrawString(column.ToString(), Font, textBrush, x, 0f, sf);
+                    {
+                        e.Graphics.DrawString(column.ToString(), Font, textBrush, x, 0f, sf);
+                    }
 
-                e.Graphics.DrawLine(pen, (int)x, fontSize.Height + (column % 5 == 0 ? 1 : 3), (int)x, Height - 4);
+                    e.Graphics.DrawLine(pen, (int)x, fontSize.Height + (column % 5 == 0 ? 1 : 3), (int)x, Height - 4);
+            }
             }
 
             using (var pen = new Pen(TickColor))
+            {
                 e.Graphics.DrawLine(pen, new Point(car.X - 3, Height - 3), new Point(car.X + 3, Height - 3));
+            }
 
             using (var pen = new Pen(CaretTickColor))
             {

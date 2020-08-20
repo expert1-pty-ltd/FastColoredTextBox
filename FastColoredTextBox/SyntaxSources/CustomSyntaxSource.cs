@@ -4,13 +4,12 @@ using System.Text;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class CustomSyntaxSource : SyntaxHighlighter
+    internal class CustomSyntaxSource : SyntaxHighlighter
     {
         public CustomSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         { }
         public override void Init()
         {
-            
         }
     }
 }

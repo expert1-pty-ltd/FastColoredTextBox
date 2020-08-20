@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class AvrasmSyntaxSource : SyntaxHighlighter
+    internal class AvrasmSyntaxSource : SyntaxHighlighter
     {
         public AvrasmSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         {
@@ -16,7 +16,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
         {
             //block macro
             if (Regex.IsMatch(args.LineText, @"^\.macro\s.*\.endm$"))
+            {
                 return;
+            }
             //start of block macro
             if (Regex.IsMatch(args.LineText, @"\.macro\b"))
             {
@@ -69,10 +71,10 @@ namespace FastColoredTextBoxNS.SyntaxSources
                 PredefinedStyles.BrownStyle,
                 new Regex(@"'(?<=[^\\])(.|\\[0nrabftv\\'""]|\\x[A-Fa-f0-9]{ 2}|\\[0-3][0-7]{2})'(?=[^\\])|" +
                 @"""(?<=[^\\]).*?""(?=[^\\])", RegexOptions.Singleline | RegexCompiledOption));
-            AddStyle("Comment", 
+            AddStyle("Comment",
                 PredefinedStyles.GreenStyle,
                 new Regex(@"(\;.*)|(\/\/.*)$", RegexOptions.Multiline | RegexCompiledOption));
-            AddStyle("Comment2", 
+            AddStyle("Comment2",
                 StyleSchema["Comment1"].Style,
                 new Regex(@"(\/\*.*?\*\/)|(\/\*.*)", RegexOptions.Singleline | RegexCompiledOption));
             AddStyle("Number",
@@ -82,7 +84,7 @@ namespace FastColoredTextBoxNS.SyntaxSources
                 PredefinedStyles.DarkGreenBoldStyle,
                 new Regex(@"#(define|undef|ifn?def|(end)?if|el(if|se)|error|warning|message|include|pragma)?", RegexCompiledOption));
             AddStyle("Assembler Directive",
-                PredefinedStyles.DarkGreenBoldStyle,     
+                PredefinedStyles.DarkGreenBoldStyle,
                 new Regex(@"\.(byte|cseg(size)?|db|def|dseg|dw|endm(acro)?|equ|eseg|exit|include|list(mac)?|macro|nolist|org|set|el(se|if)" +
                 @"|endif|error|ifn?(def)?|message|dd|dq|undef|warning|(no)?overlap)\b", RegexOptions.IgnoreCase | RegexCompiledOption));
             AddStyle("Instruction",
@@ -108,7 +110,6 @@ namespace FastColoredTextBoxNS.SyntaxSources
             AddFoldingRule(@"\.[Mm][Aa][Cc][Rr][Oo]\b", @"\.[Ee][Nn][Dd][Mm][Aa][Cc][Rr][Oo]\b");
             AddFoldingRule(@"[A-Z]\w*:", @"reti?\b");
             AddFoldingRule(@"/\*", @"\*/");
-
         }
     }
 }

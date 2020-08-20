@@ -54,9 +54,13 @@ namespace FastColoredTextBoxNS
             get
             {
                 if (platformType == Platform.X86)
+                {
                     return RegexOptions.Compiled;
+                }
                 else
+                {
                     return RegexOptions.None;
+                }
             }
         }
 
@@ -88,24 +92,26 @@ namespace FastColoredTextBoxNS
             //
             //string highlighting
             foreach (var styleInfo in StyleSchema)
+            {
                 range.SetStyle(styleInfo.Style, styleInfo.Rule);
+            }
             //clear folding markers
             range.ClearFoldingMarkers();
             //set folding markers
             foreach (var foldRule in FoldingSchema)
+            {
                 range.SetFoldingMarkers(foldRule.startMarkerRegex, foldRule.endMarkerRegex, foldRule.options);
+            }
         }
         public virtual void AutoIndentNeeded(object sender, AutoIndentEventArgs args)
         {
-
         }
         public abstract void Init();
         public virtual void Dispose()
         {
-            if (StyleSchema != null) StyleSchema.Dispose();
+            StyleSchema?.Dispose();
         }
     }
-
 
     /// <summary>
     /// Style and associated Regex Combinations
@@ -128,7 +134,9 @@ namespace FastColoredTextBoxNS
                 regexs.Add(regex);
             }
             else
+            {
                 throw new ArgumentException("List contained style with name " + name);
+            }
         }
         public void Add(StyleDescription style)
         {
@@ -145,7 +153,9 @@ namespace FastColoredTextBoxNS
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         public bool Remove(StyleDescription style)
@@ -170,7 +180,9 @@ namespace FastColoredTextBoxNS
         public void CopyTo(StyleDescription[] styles, int index)
         {
             for (int i = 0; i < names.Count; ++i)
+            {
                 styles[index + i] = this[i];
+            }
         }
         public StyleDescription this[int i]
         {
@@ -178,7 +190,6 @@ namespace FastColoredTextBoxNS
             {
                 return new StyleDescription(names[i], styles[i], regexs[i]);
             }
-            
         }
         public StyleDescription this[string name]
         {
@@ -186,9 +197,13 @@ namespace FastColoredTextBoxNS
             {
                 int i = names.IndexOf(name);
                 if (i >= 0 && i < names.Count)
+                {
                     return this[i];
+                }
                 else
+                {
                     throw new ArgumentOutOfRangeException("StyleDescriptionList not contained style with name \"" + name + "\"");
+                }
             }
         }
         public void ChangeStyle(string styleName, Style newStyle)
@@ -210,9 +225,11 @@ namespace FastColoredTextBoxNS
         public IEnumerator<StyleDescription> GetEnumerator()
         {
             for (int i = 0; i < names.Count; ++i)
+            {
                 yield return this[i];
+            }
         }
-        
+
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -222,7 +239,10 @@ namespace FastColoredTextBoxNS
         {
             if (styles.Count != 0)
             {
-                foreach (var st in Styles) st.Dispose();
+                foreach (var st in Styles)
+                {
+                    st.Dispose();
+                }
             }
         }
     }

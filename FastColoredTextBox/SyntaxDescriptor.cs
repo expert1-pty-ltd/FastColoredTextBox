@@ -18,13 +18,15 @@ namespace FastColoredTextBoxNS
         public void Dispose()
         {
             foreach (var style in styles)
+            {
                 style.Dispose();
+            }
         }
     }
 
     public class RuleDesc
     {
-        Regex regex;
+        private Regex regex;
         public string pattern;
         public RegexOptions options = RegexOptions.None;
         public Style style;

@@ -12,14 +12,13 @@ namespace Tester
 {
     public partial class DiffMergeSample : Form
     {
-        int updating;
-        Style greenStyle;
-        Style redStyle;
+        private int updating;
+        private Style greenStyle;
+        private Style redStyle;
 
         public DiffMergeSample()
         {
             InitializeComponent();
-
 
             greenStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Lime)));
             redStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(50, Color.Red)));
@@ -28,36 +27,48 @@ namespace Tester
         private void btSecond_Click(object sender, EventArgs e)
         {
             if (ofdFile.ShowDialog() == DialogResult.OK)
+            {
                 tbSecondFile.Text = ofdFile.FileName;
+            }
         }
 
         private void btFirst_Click(object sender, EventArgs e)
         {
             if (ofdFile.ShowDialog() == DialogResult.OK)
+            {
                 tbFirstFile.Text = ofdFile.FileName;
+            }
         }
 
-        void tb_VisibleRangeChanged(object sender, EventArgs e)
+        private void tb_VisibleRangeChanged(object sender, EventArgs e)
         {
             if (updating > 0)
+            {
                 return;
+            }
 
             var vPos = (sender as FastColoredTextBox).VerticalScroll.Value;
             var curLine = (sender as FastColoredTextBox).Selection.Start.iLine;
 
             if (sender == fctb2)
+            {
                 UpdateScroll(fctb1, vPos, curLine);
+            }
             else
+            {
                 UpdateScroll(fctb2, vPos, curLine);
+            }
 
             fctb1.Refresh();
             fctb2.Refresh();
         }
 
-        void UpdateScroll(FastColoredTextBox tb, int vPos, int curLine)
+        private void UpdateScroll(FastColoredTextBox tb, int vPos, int curLine)
         {
             if (updating > 0)
+            {
                 return;
+            }
             //
             BeginUpdate();
             //
@@ -68,7 +79,9 @@ namespace Tester
             }
 
             if (curLine < tb.LinesCount)
+            {
                 tb.Selection = new Range(tb, 0, curLine, 0, curLine);
+            }
             //
             EndUpdate();
         }
@@ -95,11 +108,15 @@ namespace Tester
             fctb2.Clear();
 
             Cursor = Cursors.WaitCursor;
-           
-            if (Path.GetExtension(tbFirstFile.Text).ToLower() == ".cs")
+
+            if (string.Equals(Path.GetExtension(tbFirstFile.Text), ".cs", StringComparison.OrdinalIgnoreCase))
+            {
                 fctb1.Language = fctb2.Language = Language.CSharp;
+            }
             else
+            {
                 fctb1.Language = fctb2.Language = Language.Custom;
+            }
 
             var source1 = Lines.Load(tbFirstFile.Text);
             var source2 = Lines.Load(tbSecondFile.Text);
@@ -135,7 +152,9 @@ namespace Tester
                         break;
                 }
                 if (line.subLines != null)
+                {
                     Process(line.subLines);
+                }
             }
         }
     }
@@ -169,7 +188,7 @@ namespace Tester
 
             /// <summary>
             /// This is the sole public method and it initializes
-            /// the LCS matrix the first time it's called, and 
+            /// the LCS matrix the first time it's called, and
             /// proceeds to fire a series of LineUpdate events
             /// </summary>
             public void RunDiff()
@@ -202,7 +221,7 @@ namespace Tester
 
             /// <summary>
             /// This method is an optimization that
-            /// skips matching elements at the end of the 
+            /// skips matching elements at the end of the
             /// two arrays being diff'ed.
             /// Care's taken so that this will never
             /// overlap with the pre-skip.
@@ -237,7 +256,7 @@ namespace Tester
 
             /// <summary>
             /// This traverses the elements using the LCS matrix
-            /// and fires appropriate events for added, subtracted, 
+            /// and fires appropriate events for added, subtracted,
             /// and unchanged lines.
             /// It's recursively called till we run out of items.
             /// </summary>
@@ -268,7 +287,6 @@ namespace Tester
                         FireLineUpdate(DiffType.Deleted, _preSkip + leftIndex - 1, -1);
                     }
                 }
-
             }
 
             /// <summary>
@@ -279,7 +297,9 @@ namespace Tester
             {
                 int totalSkip = _preSkip + _postSkip;
                 if (totalSkip >= _left.Count || totalSkip >= _right.Count)
+                {
                     return;
+                }
 
                 // We only create a matrix large enough for the
                 // unskipped contents of the diff'ed arrays
@@ -313,7 +333,9 @@ namespace Tester
                 var local = this.LineUpdate;
 
                 if (local == null)
+                {
                     return;
+                }
 
                 T lineValue = leftIndex >= 0 ? _left[leftIndex] : _right[rightIndex];
 
@@ -335,7 +357,7 @@ namespace Tester
 
             /// <summary>
             /// This comparison is specifically
-            /// for strings, and was nearly thrice as 
+            /// for strings, and was nearly thrice as
             /// fast as the default comparison operation.
             /// </summary>
             /// <param name="left"></param>
@@ -438,7 +460,6 @@ namespace Tester
             {
             }
 
-
             public Lines(int capacity)
                 : base(capacity)
             {
@@ -448,13 +469,21 @@ namespace Tester
             {
                 get
                 {
-                    if (i == -1) return fictiveLine;
+                    if (i == -1)
+                    {
+                        return fictiveLine;
+                    }
+
                     return base[i];
                 }
 
                 set
                 {
-                    if (i == -1) fictiveLine = value;
+                    if (i == -1)
+                    {
+                        fictiveLine = value;
+                    }
+
                     base[i] = value;
                 }
             }
@@ -466,7 +495,9 @@ namespace Tester
             {
                 Lines lines = new Lines();
                 foreach (var line in File.ReadAllLines(fileName, enc ?? Encoding.Default))
+                {
                     lines.Add(new Line(line));
+                }
 
                 return lines;
             }
@@ -484,7 +515,10 @@ namespace Tester
                     if (e.DiffType == DiffType.Inserted)
                     {
                         if (this[iLine].subLines == null)
+                        {
                             this[iLine].subLines = new Lines();
+                        }
+
                         e.LineValue.state = DiffType.Inserted;
                         this[iLine].subLines.Add(e.LineValue);
                     }
@@ -496,7 +530,9 @@ namespace Tester
                             this[iLine - 1].state == DiffType.Deleted &&
                             this[iLine - 1].subLines == null &&
                             e.DiffType == DiffType.None)
+                        {
                             this[iLine - 1].subLines = new Lines();
+                        }
                     }
                 };
                 //запускаем алгоритм нахождения максимальной подпоследовательности (LCS)
@@ -510,7 +546,9 @@ namespace Tester
             {
                 Lines result = new Lines(this.Count);
                 foreach (var line in this)
+                {
                     result.Add(new Line(line.line));
+                }
 
                 return result;
             }
@@ -521,10 +559,18 @@ namespace Tester
             public bool Equals(Lines other)
             {
                 if (Count != other.Count)
+                {
                     return false;
+                }
+
                 for (int i = 0; i < Count; i++)
+                {
                     if (this[i] != other[i])
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
 
@@ -545,9 +591,14 @@ namespace Tester
                 for (int i = from; i <= to; i++)
                 {
                     if (this[i].state != DiffType.Deleted)
+                    {
                         result.Add(this[i]);
+                    }
+
                     if (this[i].subLines != null)
+                    {
                         result.AddRange(this[i].subLines.Expand());
+                    }
                 }
 
                 return result;

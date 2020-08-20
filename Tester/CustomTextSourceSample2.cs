@@ -49,7 +49,7 @@ namespace Tester
 
     public class TextSourceWithLineFiltering : TextSource
     {
-        List<int> toSourceIndex = new List<int>();
+        private List<int> toSourceIndex = new List<int>();
         private string _lineFilterRegex;
 
         public string LineFilterRegex
@@ -67,7 +67,9 @@ namespace Tester
             for (int i = 0; i < count; i++)
             {
                 if (regex.IsMatch(lines[i].Text))
+                {
                     toSourceIndex.Add(i);
+                }
             }
 
             CurrentTB.NeedRecalc(true);
@@ -95,14 +97,18 @@ namespace Tester
             {
                 var c = lines.Count;
                 while (index >= toSourceIndex.Count)
+                {
                     toSourceIndex.Add(c++);
+                }
             }
             else
             {
                 var srcIndex = toSourceIndex[index];
                 toSourceIndex.Insert(index, srcIndex);
                 for (int i = index + 1; i < toSourceIndex.Count; i++)
+                {
                     toSourceIndex[i]++;
+                }
             }
 
             index = toSourceIndex[index];
@@ -119,7 +125,9 @@ namespace Tester
                 toSourceIndex.RemoveAt(ii);
 
                 for (int i = index; i < toSourceIndex.Count; i++)
+                {
                     toSourceIndex[i]--;
+                }
             }
         }
 

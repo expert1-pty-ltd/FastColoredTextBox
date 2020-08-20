@@ -5,10 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class PHPSyntaxSource : SyntaxHighlighter
+    internal class PHPSyntaxSource : SyntaxHighlighter
     {
         public PHPSyntaxSource (FastColoredTextBox textbox) : base(textbox)
-        { 
+        {
             Init();
         }
 
@@ -16,7 +16,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
         {
             //block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{.*\}[^""']*$"))
+            {
                 return;
+            }
             //start of block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{"))
             {
@@ -32,11 +34,13 @@ namespace FastColoredTextBoxNS.SyntaxSources
             }
             //is unclosed operator in previous line ?
             if (Regex.IsMatch(args.PrevLineText, @"^\s*(if|for|foreach|while|[\}\s]*else)\b[^{]*$"))
+            {
                 if (!Regex.IsMatch(args.PrevLineText, @"(;\s*$)|(;\s*//)")) //operator is unclosed
                 {
                     args.Shift = args.TabLength;
                     return;
                 }
+            }
         }
 
         public override void Init()

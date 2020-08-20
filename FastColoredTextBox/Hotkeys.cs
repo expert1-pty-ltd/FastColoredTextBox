@@ -107,7 +107,10 @@ namespace FastColoredTextBoxNS
             }
 
             if (sb.Length > 1)
+            {
                 sb.Remove(sb.Length - 2, 2);
+            }
+
             Thread.CurrentThread.CurrentUICulture = cult;
 
             return sb.ToString();
@@ -121,7 +124,7 @@ namespace FastColoredTextBoxNS
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             var kc = new KeysConverter();
-            
+
             foreach (var p in s.Split(','))
             {
                 var pp = p.Split('=');
@@ -245,7 +248,9 @@ namespace FastColoredTextBoxNS
                 var form = new HotkeysEditorForm(HotkeysMapping.Parse(value as string));
 
                 if (form.ShowDialog() == DialogResult.OK)
+                {
                     value = form.GetHotkeys().ToString();
+                }
             }
             return value;
         }

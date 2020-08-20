@@ -12,9 +12,9 @@ namespace Tester
 {
     public partial class LoggerSample : Form
     {
-        TextStyle infoStyle = new TextStyle(Brushes.Black, null, FontStyle.Regular);
-        TextStyle warningStyle = new TextStyle(Brushes.BurlyWood, null, FontStyle.Regular);
-        TextStyle errorStyle = new TextStyle(Brushes.Red, null, FontStyle.Regular);
+        private TextStyle infoStyle = new TextStyle(Brushes.Black, null, FontStyle.Regular);
+        private TextStyle warningStyle = new TextStyle(Brushes.BurlyWood, null, FontStyle.Regular);
+        private TextStyle errorStyle = new TextStyle(Brushes.Red, null, FontStyle.Regular);
 
         public LoggerSample()
         {
@@ -51,7 +51,9 @@ namespace Tester
                 fctb.Selection.End = userSelection.End;
             }
             else
+            {
                 fctb.GoEnd();//scroll to end of the text
+            }
             //
             fctb.Selection.EndUpdate();
             fctb.EndUpdate();

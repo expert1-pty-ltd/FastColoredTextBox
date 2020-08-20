@@ -38,9 +38,13 @@ namespace Tester
             {
                 var place = fctb.PointToPlace(e.Location);
                 if(fctb.Bookmarks.Contains(place.iLine))
+                {
                     fctb.Bookmarks.Remove(place.iLine);
+                }
                 else
+                {
                     fctb.Bookmarks.Add(place.iLine);
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class FromXMLfileSyntaxSource : SyntaxHighlighter
+    internal class FromXMLfileSyntaxSource : SyntaxHighlighter
     {
         protected string XMLfile;
         public FromXMLfileSyntaxSource(FastColoredTextBox textbox) : base(textbox)
@@ -25,7 +25,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
         {
             var doc = new XmlDocument();
             if (!File.Exists(XMLfile))
+            {
                 XMLfile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileName(XMLfile));
+            }
 
             doc.LoadXml(File.ReadAllText(XMLfile));
 
@@ -34,7 +36,7 @@ namespace FastColoredTextBoxNS.SyntaxSources
             if (brackets != null)
             {
                 if (brackets.Attributes["left"] == null || brackets.Attributes["right"] == null ||
-                    brackets.Attributes["left"].Value == "" || brackets.Attributes["right"].Value == "")
+                    brackets.Attributes["left"].Value?.Length == 0 || brackets.Attributes["right"].Value?.Length == 0)
                 {
                     Textbox.LeftBracket = '\x0';
                     Textbox.RightBracket = '\x0';
@@ -46,7 +48,7 @@ namespace FastColoredTextBoxNS.SyntaxSources
                 }
 
                 if (brackets.Attributes["left2"] == null || brackets.Attributes["right2"] == null ||
-                    brackets.Attributes["left2"].Value == "" || brackets.Attributes["right2"].Value == "")
+                    brackets.Attributes["left2"].Value?.Length == 0 || brackets.Attributes["right2"].Value?.Length == 0)
                 {
                     Textbox.LeftBracket2 = '\x0';
                     Textbox.RightBracket2 = '\x0';
@@ -57,10 +59,14 @@ namespace FastColoredTextBoxNS.SyntaxSources
                     Textbox.RightBracket2 = brackets.Attributes["right2"].Value[0];
                 }
 
-                if (brackets.Attributes["strategy"] == null || brackets.Attributes["strategy"].Value == "")
+                if (brackets.Attributes["strategy"] == null || brackets.Attributes["strategy"].Value?.Length == 0)
+                {
                     Textbox.BracketsHighlightStrategy = BracketsHighlightStrategy.Strategy2;
+                }
                 else
+                {
                     Textbox.BracketsHighlightStrategy = (BracketsHighlightStrategy)Enum.Parse(typeof(BracketsHighlightStrategy), brackets.Attributes["strategy"].Value);
+                }
             }
 
             //Load MainStyles
@@ -87,7 +93,6 @@ namespace FastColoredTextBoxNS.SyntaxSources
             {
                 FoldingSchema.Add(ParseFolding(frule));
             }
-
         }
         protected FoldingDescription ParseFolding(XmlNode foldingNode)
         {
@@ -96,7 +101,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
             folding.endMarkerRegex = foldingNode.Attributes["finish"].Value;
             XmlAttribute optionsA = foldingNode.Attributes["options"];
             if (optionsA != null)
+            {
                 folding.options = RegexCompiledOption|(RegexOptions)Enum.Parse(typeof(RegexOptions), optionsA.Value);
+            }
 
             return folding;
         }
@@ -106,7 +113,10 @@ namespace FastColoredTextBoxNS.SyntaxSources
             XmlAttribute optionsA = ruleNode.Attributes["options"];
             RegexOptions options = RegexCompiledOption;
             if (optionsA != null)
-                options = options|(RegexOptions)Enum.Parse(typeof(RegexOptions), optionsA.Value);
+            {
+                options |= (RegexOptions)Enum.Parse(typeof(RegexOptions), optionsA.Value);
+            }
+
             return new Regex(pattern, options);
         }
         protected Style ParseStyle(XmlNode styleNode)
@@ -119,14 +129,21 @@ namespace FastColoredTextBoxNS.SyntaxSources
             //colors
             SolidBrush foreBrush = null;
             if (colorA != null)
+            {
                 foreBrush = new SolidBrush(ParseColor(colorA.Value));
+            }
+
             SolidBrush backBrush = null;
             if (backColorA != null)
+            {
                 backBrush = new SolidBrush(ParseColor(backColorA.Value));
+            }
             //fontStyle
             FontStyle fontStyle = FontStyle.Regular;
             if (fontStyleA != null)
+            {
                 fontStyle = (FontStyle)Enum.Parse(typeof(FontStyle), fontStyleA.Value);
+            }
 
             return new TextStyle(foreBrush, backBrush, fontStyle);
         }
@@ -135,13 +152,19 @@ namespace FastColoredTextBoxNS.SyntaxSources
             if (s.StartsWith("#"))
             {
                 if (s.Length <= 7)
+                {
                     return Color.FromArgb(255,
                                           Color.FromArgb(Int32.Parse(s.Substring(1), NumberStyles.AllowHexSpecifier)));
+                }
                 else
+                {
                     return Color.FromArgb(Int32.Parse(s.Substring(1), NumberStyles.AllowHexSpecifier));
+                }
             }
             else
+            {
                 return Color.FromName(s);
+            }
         }
     }
 }

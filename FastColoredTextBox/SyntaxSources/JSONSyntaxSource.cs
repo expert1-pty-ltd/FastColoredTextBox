@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class JSONSyntaxSource : SyntaxHighlighter
+    internal class JSONSyntaxSource : SyntaxHighlighter
     {
         public JSONSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         {

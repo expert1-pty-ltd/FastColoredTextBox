@@ -9,11 +9,11 @@ namespace Tester
     public partial class MarkerToolSample : Form
     {
         //Shortcut style
-        ShortcutStyle shortCutStyle = new ShortcutStyle(Pens.Maroon);
+        private ShortcutStyle shortCutStyle = new ShortcutStyle(Pens.Maroon);
         //Marker styles
-        MarkerStyle YellowStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Yellow)));
-        MarkerStyle RedStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Red)));
-        MarkerStyle GreenStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Green)));
+        private MarkerStyle YellowStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Yellow)));
+        private MarkerStyle RedStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Red)));
+        private MarkerStyle GreenStyle = new MarkerStyle(new SolidBrush(Color.FromArgb(180, Color.Green)));
 
         public MarkerToolSample()
         {
@@ -45,7 +45,6 @@ namespace Tester
                 r.SetStyle(shortCutStyle);
             }
         }
-
 
         private void fctb_VisualMarkerClick(object sender, VisualMarkerEventArgs e)
         {
@@ -79,11 +78,15 @@ namespace Tester
             //trim left
             sel.Normalize();
             while (char.IsWhiteSpace(sel.CharAfterStart) && sel.Start < sel.End)
+            {
                 sel.GoRight(true);
+            }
             //trim right
             sel.Inverse();
             while (char.IsWhiteSpace(sel.CharBeforeStart) && sel.Start > sel.End)
+            {
                 sel.GoLeft(true);
+            }
         }
 
         private void clearMarkedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -96,8 +99,12 @@ namespace Tester
         {
             //draw current line marker
             if (e.LineIndex == fctb.Selection.Start.iLine)
+            {
                 using (var brush = new LinearGradientBrush(new Rectangle(0, e.LineRect.Top, 15, 15), Color.LightPink, Color.Red, 45))
+                {
                     e.Graphics.FillEllipse(brush, 0, e.LineRect.Top, 15, 15);
+                }
+            }
         }
 
         private void fctb_Resize(object sender, EventArgs e)

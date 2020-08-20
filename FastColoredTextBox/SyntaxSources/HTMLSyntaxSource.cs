@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class HTMLSyntaxSource : SyntaxHighlighter
+    internal class HTMLSyntaxSource : SyntaxHighlighter
     {
         public HTMLSyntaxSource(FastColoredTextBox textbox) : base(textbox)
         {
@@ -28,29 +28,29 @@ namespace FastColoredTextBoxNS.SyntaxSources
             Textbox.RightBracket2 = ')';
             Textbox.AutoIndentCharsPatterns = @"";
 
-            AddStyle("Comment1", 
-                PredefinedStyles.GreenStyle, 
+            AddStyle("Comment1",
+                PredefinedStyles.GreenStyle,
                 new Regex(@"(<!--.*?-->)|(<!--.*)", RegexOptions.Singleline | RegexCompiledOption));
             AddStyle("Comment2",
-                PredefinedStyles.GreenStyle, 
+                PredefinedStyles.GreenStyle,
                 new Regex(@"(<!--.*?-->)|(.*-->)", RegexOptions.Singleline | RegexOptions.RightToLeft | RegexCompiledOption));
-            AddStyle("Tag Bracket", 
-                PredefinedStyles.BlueStyle, 
+            AddStyle("Tag Bracket",
+                PredefinedStyles.BlueStyle,
                 new Regex(@"<|/>|</|>", RegexCompiledOption));
-            AddStyle("Tag Name", 
-                PredefinedStyles.MaroonStyle, 
+            AddStyle("Tag Name",
+                PredefinedStyles.MaroonStyle,
                 new Regex(@"<(?<range>[!\w:]+)", RegexCompiledOption));
-            AddStyle("End Tag", 
-                PredefinedStyles.MaroonStyle, 
+            AddStyle("End Tag",
+                PredefinedStyles.MaroonStyle,
                 new Regex(@"</(?<range>[\w:]+)>", RegexCompiledOption));
-            AddStyle("Attribute", 
-                PredefinedStyles.RedStyle, 
+            AddStyle("Attribute",
+                PredefinedStyles.RedStyle,
                 new Regex(@"(?<range>[\w\d\-]{1,20}?)='[^']*'|(?<range>[\w\d\-]{1,20})=""[^""]*""|(?<range>[\w\d\-]{1,20})=[\w\d\-]{1,20}", RegexCompiledOption));
-            AddStyle("Attribute Value", 
-                PredefinedStyles.MagentaStyle, 
+            AddStyle("Attribute Value",
+                PredefinedStyles.MagentaStyle,
                 new Regex(@"[\w\d\-]{1,20}?=(?<range>'[^']*')|[\w\d\-]{1,20}=(?<range>""[^""]*"")|[\w\d\-]{1,20}=(?<range>[\w\d\-]{1,20})", RegexCompiledOption));
-            AddStyle("Entity", 
-                PredefinedStyles.RedStyle, 
+            AddStyle("Entity",
+                PredefinedStyles.RedStyle,
                 new Regex(@"\&(amp|gt|lt|nbsp|quot|apos|copy|reg|#[0-9]{1,8}|#x[0-9a-f]{1,8});", RegexCompiledOption | RegexOptions.IgnoreCase));
             AddFoldingRule("<head", "</head>", RegexOptions.IgnoreCase);
             AddFoldingRule("<body", "</body>", RegexOptions.IgnoreCase);

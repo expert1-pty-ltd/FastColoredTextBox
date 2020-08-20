@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 
 namespace FastColoredTextBoxNS.SyntaxSources
 {
-    class CSharpSyntaxSource : SyntaxHighlighter
+    internal class CSharpSyntaxSource : SyntaxHighlighter
     {
-        Style TagContentStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
-        Regex TagContentRegex = new Regex(@"<[^>]+>", RegexCompiledOption);
+        private Style TagContentStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
+        private Regex TagContentRegex = new Regex(@"<[^>]+>", RegexCompiledOption);
 
         public CSharpSyntaxSource(FastColoredTextBox textbox) : base(textbox)
-        { 
+        {
             Init();
         }
 
@@ -20,7 +20,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
         {
             //block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{.*\}[^""']*$"))
+            {
                 return;
+            }
             //start of block {}
             if (Regex.IsMatch(args.LineText, @"^[^""']*\{"))
             {
@@ -49,11 +51,13 @@ namespace FastColoredTextBoxNS.SyntaxSources
             }
             //is unclosed operator in previous line ?
             if (Regex.IsMatch(args.PrevLineText, @"^\s*(if|for|foreach|while|[\}\s]*else)\b[^{]*$"))
+            {
                 if (!Regex.IsMatch(args.PrevLineText, @"(;\s*$)|(;\s*//)")) //operator is unclosed
                 {
                     args.Shift = args.TabLength;
                     return;
                 }
+            }
         }
 
         public override void Init()
@@ -146,7 +150,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
             //
             //string highlighting
             foreach (var styleInfo in StyleSchema)
+            {
                 range.SetStyle(styleInfo.Style, styleInfo.Rule);
+            }
 
             //find document comments
             foreach (Range r in range.GetRanges(@"^\s*///.*$", RegexOptions.Multiline))
@@ -172,7 +178,9 @@ namespace FastColoredTextBoxNS.SyntaxSources
             range.ClearFoldingMarkers();
             //set folding markers
             foreach (var foldRule in FoldingSchema)
+            {
                 range.SetFoldingMarkers(foldRule.startMarkerRegex, foldRule.endMarkerRegex);
+            }
         }
     }
 }
